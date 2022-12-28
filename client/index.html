@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat GTP</title>
     <link rel="stylesheet" href="style.css" />
@@ -11,14 +11,9 @@
     <div id="app">
       <div id="chat_container"></div>
 
-      <form action="">
-        <textarea
-          name="prompt"
-          placeholder="Ask GPT..."
-          cols="1"
-          rows="1"
-        ></textarea>
-        <button type="submit"><img src="assets/send.svg" alt="send" /></button>
+      <form>
+        <textarea name="prompt" rows="1" cols="1" placeholder="Ask GPT..."></textarea>
+        <button type="submit"><img src="assets/send.svg" alt="send" />
       </form>
     </div>
     <script type="module" src="/script.js"></script>
