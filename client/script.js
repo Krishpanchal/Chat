@@ -20,8 +20,10 @@ function typeText(element, text) {
   let i = 0;
 
   let interval = setInterval(() => {
-    if (i < text.length) element.innertHTML += text.charAt(i++);
-    else clearInterval(interval);
+    if (i < text.length) {
+      element.innerHTML += text.charAt(i++);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    } else clearInterval(interval);
   }, 20);
 }
 
@@ -49,12 +51,25 @@ function chatStripe(isAi, value, uniqueId) {
 `;
 }
 
-function handleSubmit(e) {
+async function makeRequest(message) {
+  const response = await fetch("http://localhost:5000", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      prompt: message,
+    }),
+  });
+  const data = await response.json();
+
+  return data;
+}
+
+async function handleSubmit(e) {
   e.preventDefault();
 
   const data = new FormData(form);
-
-  console.log(data.get("prompt"));
 
   //user's message
   chatContainer.innerHTML += chatStripe(false, data.get("prompt"));
@@ -67,8 +82,19 @@ function handleSubmit(e) {
   chatContainer.scrollTop = chatContainer.scrollHeight;
 
   const messageDiv = document.getElementById(uniqueId);
-
   loader(messageDiv);
+
+  form.querySelector("textarea").disabled = true;
+  const replyText = await makeRequest(data.get("prompt"));
+
+  clearInterval(loadInterval);
+  form.querySelector("textarea").disabled = false;
+  form.querySelector("textarea").focus();
+
+  messageDiv.textContent = "";
+
+  if (replyText.success) typeText(messageDiv, replyText.bot.trim());
+  else typeText(messageDiv, "Something went wrong. Please try again!");
 }
 
 form.addEventListener("submit", handleSubmit);
